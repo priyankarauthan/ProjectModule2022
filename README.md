@@ -1,33 +1,65 @@
 ├── vendor-file-processing
-│   ├── src
-│   │   ├── main
-│   │   │   ├── java
-│   │   │   │   └── com.vendor.processing
-│   │   │   │       ├── VendorFileProcessingApplication.java
-│   │   │   │       ├── config
-│   │   │   │       │   ├── KafkaConfig.java
-│   │   │   │       │   ├── ElasticsearchConfig.java
-│   │   │   │       │   ├── HDFSConfig.java
-│   │   │   │       ├── controller
-│   │   │   │       │   ├── FileUploadController.java
-│   │   │   │       ├── service
-│   │   │   │       │   ├── FileIngestionService.java
-│   │   │   │       │   ├── FileProcessingService.java
-│   │   │   │       │   ├── DataProcessingService.java
-│   │   │   │       │   ├── ElasticsearchIndexingService.java
-│   │   │   │       │   ├── ParquetFileService.java
-│   │   │   │       │   ├── KafkaEventService.java
-│   │   │   │       ├── repository
-│   │   │   │       │   ├── VendorDataRepository.java
-│   │   │   │       ├── model
-│   │   │   │       │   ├── VendorData.java
-│   │   │   │       ├── events
-│   │   │   │       │   ├── FileUploadedEvent.java
-│   │   │   │       │   ├── FileParsedEvent.java
-│   │   │   │       │   ├── DataProcessedEvent.java
-│   │   │   │       │   ├── DataStoredEvent.java
-│   │   ├── resources
-│   │   │   ├── application.yml
-│   ├── Dockerfile
+│   ├── sftp-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.sftp
+│   │   │   │   │       ├── SftpApplication.java
+│   │   │   │   │       ├── config
+│   │   │   │   │       │   ├── SftpConfig.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── SftpService.java
+│   ├── storage-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.storage
+│   │   │   │   │       ├── StorageApplication.java
+│   │   │   │   │       ├── config
+│   │   │   │   │       │   ├── S3Config.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── StorageService.java
+│   ├── processing-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.processing
+│   │   │   │   │       ├── ProcessingApplication.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── FileProcessingService.java
+│   ├── indexing-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.indexing
+│   │   │   │   │       ├── IndexingApplication.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── ElasticsearchIndexingService.java
+│   ├── auth-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.auth
+│   │   │   │   │       ├── AuthApplication.java
+│   │   │   │   │       ├── config
+│   │   │   │   │       │   ├── SecurityConfig.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── AuthService.java
+│   ├── event-service
+│   │   ├── src
+│   │   │   ├── main
+│   │   │   │   ├── java
+│   │   │   │   │   └── com.vendor.event
+│   │   │   │   │       ├── EventApplication.java
+│   │   │   │   │       ├── config
+│   │   │   │   │       │   ├── KafkaConfig.java
+│   │   │   │   │       ├── service
+│   │   │   │   │       │   ├── KafkaEventService.java
+│   ├── k8s-deployment
+│   │   ├── sftp-deployment.yaml
+│   │   ├── storage-deployment.yaml
+│   │   ├── processing-deployment.yaml
+│   │   ├── indexing-deployment.yaml
+│   │   ├── auth-deployment.yaml
+│   │   ├── event-deployment.yaml
 │   ├── README.md
-│   ├── pom.xml
