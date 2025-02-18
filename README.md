@@ -68,7 +68,7 @@ public class VendorFileDownloader {
 ✅ Simple to implement
 ✅ Good if the vendor does not provide real-time notifications
 
-##🔹 Approach 2: Vendor Sends an Event Notification (Best for APIs or Webhooks)
+## 🔹 Approach 2: Vendor Sends an Event Notification (Best for APIs or Webhooks)
 If the vendor provides an API or webhook notification, you can configure a listener to receive a message when the file is ready.
 
 ✅ Steps
