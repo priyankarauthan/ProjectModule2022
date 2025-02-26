@@ -1,3 +1,254 @@
+### Architecture of the Automated Data Pipeline
+The automated data pipeline I implemented follows a modular, event-driven architecture, ensuring high reliability, scalability, and security. Below is a detailed breakdown of its components:
+
+# 1. File Ingestion & Secure Transfer
+
+Source: The pipeline ingests files from various client sources via FTP/SFTP.
+
+# Secure Transfer:
+
+Files are downloaded using Apache Commons Net (for FTP) or JSCH (for SFTP).
+
+Transfers are secured using TLS/SSL encryption.
+
+A checksum validation (e.g., SHA-256) ensures file integrity.
+
+# Job Scheduling:
+
+Spring Boot's @Scheduled annotation or Spring Batch jobs handle file polling.
+
+For dynamic scheduling, Quartz Scheduler is used.
+
+# 2. File Processing & Transformation
+
+# Parsing & Preprocessing:
+
+Files (CSV, JSON, XML, Parquet) are parsed using:
+
+Apache Commons CSV (for CSVs).
+
+Jackson / Gson (for JSONs).
+
+Apache POI (for Excel).
+
+# Data Sanitization:
+
+Invalid characters, missing values, or incorrect formats are handled.
+
+# Transformation:
+
+Data is mapped to domain objects using DTOs (Data Transfer Objects).
+
+Business rules are applied using Spring Batch processing steps.
+
+# 3. Staging & Temporary Storage
+
+Staging Tables (DB2/MySQL/PostgreSQL):
+Data is temporarily stored in a staging table using Spring Data JPA.
+Duplicate detection is handled using hashing (MD5, SHA-256).
+In-Memory Processing (Redis):
+Frequently accessed data (e.g., lookup values) is cached in Redis to reduce database load.
+
+# 4. Data Validation & Business Rules
+Validation Steps:
+Ensures that mandatory fields exist.
+Validates data formats (e.g., email, phone, date).
+Cross-checks foreign keys against master data tables.
+Error Handling & Logging:
+Invalid records are logged into an error table.
+Notifications (via Kafka, email, or Slack) alert the support team.
+
+# 5. Event-Driven Processing (Kafka Integration)
+
+Kafka for Asynchronous Processing:
+Once data is validated, an event is published to a Kafka topic.
+Kafka ensures real-time data streaming to downstream systems.
+Consumers for Processing:
+Level 0, Level 1, Level 2 processing stages consume Kafka events to process and enrich the data.
+Each level transforms, validates, and stores the data progressively.
+Fault Tolerance:
+Consumer groups ensure that messages are processed even if a node fails.
+Failed messages are stored in a dead-letter queue (DLQ) for reprocessing.
+# 6. Storage & Indexing
+
+Final Storage:
+After processing, data is stored in a relational database (DB2, MySQL, PostgreSQL).
+Large files are stored in NFS or HDFS, and converted into Parquet format.
+Search & Analytics:
+Elasticsearch is used for indexing and fast retrieval.
+Logs and metrics are forwarded to Splunk for monitoring.
+# 7. Authentication & Security
+Single Sign-On (SSO) with OAuth2/OIDC:
+Authentication is managed using OAuth2 and OpenID Connect.
+Token-based authentication ensures secure API access.
+Encryption & Access Control:
+AES encryption secures sensitive data.
+Role-based access controls (RBAC) enforce authorization.
+# 8. Monitoring & CI/CD
+
+Logging & Monitoring:
+Logs are stored in Splunk or ELK Stack (Elasticsearch, Logstash, Kibana).
+Prometheus + Grafana is used for real-time performance monitoring.
+CI/CD Pipeline:
+GitHub Actions / Jenkins automates deployment.
+SonarQube ensures code quality.
+# 9. Error Handling & Retries
+
+Retry Mechanism:
+Spring Retry automatically retries failed file downloads.
+Kafka retry strategies handle transient failures.
+Alerting System:
+Failure alerts are sent via email, Slack, or PagerDuty.
+High-Level Workflow:
+File Download (FTP/SFTP) →
+File Parsing & Preprocessing (Apache Commons CSV, Jackson) →
+Data Validation & Staging (JPA, Redis) →
+Event Triggering (Kafka) →
+Multi-Level Processing (Level 0 → Level 1 → Level 2) →
+Final Storage (DB, NFS, Elasticsearch) →
+Monitoring & Alerts (Splunk, Prometheus)
+
+# Why This Architecture?
+
+✅ Scalability – Kafka ensures real-time processing at scale.
+✅ Fault Tolerance – Redis caching and DLQ prevent data loss.
+✅ Security – OAuth2/OIDC for authentication, AES encryption for data.
+✅ Performance Optimization – Staging tables, Redis caching, and Parquet format reduce latency.
+
+
+
+### Q- Large files are stored in NFS or HDFS, and converted into Parquet format. What do we use to convert files to parquet format
+✅ Apache Spark – If you're working with big data on HDFS/NFS and need distributed processing.
+Handling Large Files from a Vendor Using Distributed Processing
+
+#### When receiving a large file from a vendor, the main challenges are efficient file distribution, parallel processing, and format conversion. Here's how a distributed system processes such a large file efficiently:
+
+# 1. File Download & Storage
+Secure File Transfer
+Files are received via FTP/SFTP and downloaded using:
+Apache Commons Net (FTP)
+JSCH (SFTP)
+Secure transmission using TLS/SSL.
+Checksum validation (SHA-256) ensures data integrity.
+Storage Location
+The file is stored in a distributed file system (NFS, HDFS, S3, or HDFS-based storage like HBase) for further processing.
+
+# 2. File Splitting for Parallel Processing
+Once stored, the large file needs to be split into smaller chunks so that multiple nodes can process it in parallel.
+
+Approach 1: Using HDFS Block Storage
+If stored in HDFS, the file is automatically split into blocks (128MB or 256MB each).
+Each block is replicated across multiple data nodes for reliability.
+
+Approach 2: Manually Splitting the File
+If the file is a CSV or JSON, we split it using:
+Apache Hadoop FileSystem API
+Apache Spark’s textFile().repartition(N)
+Linux split command (for traditional file systems)
+
+# 3. Distributed Processing Across Multiple Nodes
+After splitting, multiple nodes process the file in parallel.
+
+Processing Frameworks
+Apache Spark (Best for Large-Scale Processing)
+
+Uses RDDs (Resilient Distributed Datasets) to process data in parallel.
+Supports in-memory computation for fast processing.
+Example: Spark reads Parquet, transforms data, and stores it.
+
+
+Dataset<Row> df = spark.read().format("csv").option("header", "true").load("hdfs://path/to/file.csv");
+df.write().parquet("hdfs://path/to/output.parquet");
+Apache Flink (For Streaming & Batch Processing)
+
+Provides real-time and batch processing.
+Works well with Kafka for streaming large files.
+Kafka + Microservices
+
+Kafka producers push split file chunks into Kafka topics.
+Multiple Kafka consumers (Microservices) read and process chunks concurrently.
+
+# 4. File Conversion to Parquet Format
+
+# Why Convert to Parquet?
+
+Columnar format → Fast reads and efficient storage.
+Compression → Reduces storage footprint.
+Optimized for analytics.
+Tools for Conversion
+Apache Spark
+
+Dataset<Row> df = spark.read().format("csv").load("hdfs://path/to/split-file.csv");
+df.write().parquet("hdfs://path/to/output.parquet");
+Apache Parquet Library (Java)
+
+Configuration conf = new Configuration();
+ParquetWriter<Group> writer = ExampleParquetWriter.builder(new Path("output.parquet")).withConf(conf).build();
+Pandas (Python)
+python
+
+import pandas as pd
+df = pd.read_csv("split-file.csv")
+df.to_parquet("output.parquet")
+
+5. Storing & Indexing
+   
+Final converted files are stored in HDFS, AWS S3, or a distributed file system.
+
+Elasticsearch indexing is used for fast retrieval.
+
+# 7. Monitoring & Fault Tolerance
+   
+Failure Handling: If a node fails, Kafka’s consumer group rebalances the load.
+Logging: Logs are sent to Splunk / ELK Stack.
+Retries: Spring Retry, Kafka retries, or Spark checkpointing ensures processing resumes from the last successful stage.
+
+### End-to-End Workflow
+
+Vendor sends a file via FTP/SFTP → Downloaded & stored in HDFS/NFS/S3.
+
+File is split into chunks for parallel processing.
+
+Distributed processing using Apache Spark, Kafka, or Flink.
+
+Each node processes its chunk & converts it into Parquet.
+
+Processed data is stored in HDFS/S3/DB and indexed in Elasticsearch.
+
+Monitoring & fault tolerance ensure a resilient system.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # To know when a vendor file is ready for download from the vendor’s location to your system, you can use one of the following mechanisms depending on how the vendor provides file availability notifications:
 
 ## 🔹 Approach 1: Polling Mechanism (Scheduled Check)
