@@ -1,4 +1,26 @@
+### 🔹 How It Works in Your Vendor File Processing System
 
+1. Generate SSH Key Pair (One-Time Setup)
+
+On your Spring Boot server (job execution system), generate a key pair:
+
+```
+ssh-keygen -t rsa -b 4096 -f /opt/keys/vendor_ftp_key
+```
+This creates:
+```
+/opt/keys/vendor_ftp_key → Private key (used by your job)
+
+/opt/keys/vendor_ftp_key.pub → Public key (shared with the vendor)
+```
+
+2. Share the Public Key with the Vendor
+
+Send vendor_ftp_key.pub to the vendor and ask them to add it to the authorized keys file on their FTP/SFTP server (~/.ssh/authorized_keys).
+
+3. Configure the Spring Boot Job to Use Public-Private Key Authentication
+
+The Spring Boot job that downloads vendor files will use JSch (Java Secure Channel) to authenticate via the private key.
 
 
 
