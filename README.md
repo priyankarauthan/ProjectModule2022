@@ -1,3 +1,62 @@
+# 🔹 How OAuth 2.0 Works?
+OAuth 2.0 does not share passwords; instead, it uses access tokens to grant limited access.
+
+✅ Step-by-Step OAuth 2.0 Flow
+###1️⃣ User Initiates Login
+
+The user tries to log in using a third-party app (e.g., "Login with Google").
+
+###2️⃣ Authorization Request
+
+The app (client) redirects the user to the authorization server (Google).
+
+Example URL:
+
+objectivec
+Copy code
+https://accounts.google.com/o/oauth2/auth?
+    client_id=CLIENT_ID
+    &redirect_uri=CALLBACK_URL
+    &response_type=code
+    &scope=email profile
+The user sees a consent screen and approves access.
+
+### 3️⃣ Authorization Server Issues Code
+
+After approval, the authorization server redirects the user to the app with an authorization code.
+
+### 4️⃣ Client Requests Access Token
+
+The app exchanges the authorization code for an access token by making a secure request:
+
+bash
+Copy code
+POST https://oauth2.googleapis.com/token
+{
+  "client_id": "CLIENT_ID",
+  "client_secret": "CLIENT_SECRET",
+  "code": "AUTHORIZATION_CODE",
+  "redirect_uri": "CALLBACK_URL",
+  "grant_type": "authorization_code"
+}
+### 5️⃣ Authorization Server Issues Access Token
+
+The server verifies the code and responds with an access token (and sometimes a refresh token).
+
+### 6️⃣ Client Accesses Resource Server
+
+The app uses the access token to make API calls and fetch user data:
+
+bash
+Copy code
+GET https://www.googleapis.com/oauth2/v1/userinfo
+Authorization: Bearer ACCESS_TOKEN
+
+
+
+
+
+
 ## 🔹 Steps to Implement Secure File Transfer & Processing with Business Logic
 
 ### Step 1: Generate the Key Pair on Your Spring Boot Server
