@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 ### Architecture of the Automated Data Pipeline
 The automated data pipeline I implemented follows a modular, event-driven architecture, ensuring high reliability, scalability, and security. Below is a detailed breakdown of its components:
 
