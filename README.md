@@ -35,6 +35,42 @@ In your Spring Boot application, configure the job to use JSch (Java Secure Chan
 
 
 
+## 🔹 How to Set Time with @Scheduled in Spring Boot?
+
+Spring Boot provides the @Scheduled annotation to run tasks at specific times, including polling an FTP server.
+We can set the time between 3-4 AM using cron expressions or fixed delays.
+
+### 🔹 Using @Scheduled with a Cron Expression (Preferred)
+
+✅ Best when polling needs to happen at a specific time (e.g., between 3-4 AM every 10 minutes).
+✅ More flexible than fixed delays.
+
+## 📌 Poll FTP Every 10 Minutes Between 3-4 AM
+
+```
+@Scheduled(cron = "0 0/10 3-4 * * ?") // Runs every 10 minutes from 3:00 to 3:50 AM
+public void checkForNewFiles() {
+    List<String> newFiles = ftpService.getNewFiles("/vendor/incoming/");
+    for (String file : newFiles) {
+        kafkaTemplate.send("file-events", new FileEvent(file, "/vendor/incoming/"));
+    }
+}
+```
+### 🔹 Cron Breakdown: "0 0/10 3-4 * * ?"
+
+0 → Start at second 0
+
+0/10 → Run every 10 minutes
+
+3-4 → Run between 3 AM - 4 AM
+
+* * ? → Run every day
+
+
+
+
+
+
 
 
 
