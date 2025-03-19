@@ -1,27 +1,36 @@
 ### 🔹 How It Works in Your Vendor File Processing System
 
-1. Generate SSH Key Pair (One-Time Setup)
+1️⃣ Generate the Key Pair on Your Spring Boot Server
 
-On your Spring Boot server (job execution system), generate a key pair:
+Run the following command on your Spring Boot server (or wherever the file download job runs):
 
 ```
 ssh-keygen -t rsa -b 4096 -f /opt/keys/vendor_ftp_key
+
 ```
 This creates:
 ```
-/opt/keys/vendor_ftp_key → Private key (used by your job)
+Private Key: /opt/keys/vendor_ftp_key (🔒 Keep this secret!)
 
-/opt/keys/vendor_ftp_key.pub → Public key (shared with the vendor)
+Public Key: /opt/keys/vendor_ftp_key.pub (📤 Share this with the vendor)
+```
+2️⃣ Share the Public Key with the Vendor
+
+Send vendor_ftp_key.pub to the vendor's FTP/SFTP administrator.
+
+The vendor will add this public key to the ~/.ssh/authorized_keys file on their FTP/SFTP server.
+
+For example, if the vendor provides SSH/SFTP access, they will do:
+
+```
+cat vendor_ftp_key.pub >> ~/.ssh/authorized_keys
 ```
 
-2. Share the Public Key with the Vendor
+3️⃣ Use the Private Key in Your Spring Boot Job
 
-Send vendor_ftp_key.pub to the vendor and ask them to add it to the authorized keys file on their FTP/SFTP server (~/.ssh/authorized_keys).
+Now, when your Spring Boot job connects to the vendor’s FTP/SFTP, it will use the private key instead of a password.
 
-3. Configure the Spring Boot Job to Use Public-Private Key Authentication
-
-The Spring Boot job that downloads vendor files will use JSch (Java Secure Channel) to authenticate via the private key.
-
+In your Spring Boot application, configure the job to use JSch (Java Secure Channel) for SFTP authentication with the private key
 
 
 
