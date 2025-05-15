@@ -54,6 +54,20 @@ Authorization: Bearer ACCESS_TOKEN
 
 
 
+Example: Level 0 processor calls Level 1 processor via REST/Kafka.
+
+Use JWT to authenticate service calls:
+
+Each service includes a JWT in headers.
+
+The receiver validates the JWT to ensure the request is from a trusted service.
+
+✅ Benefit: Secures internal service communication in microservices setup.
+
+
+
+
+
 
 
 
