@@ -4,7 +4,7 @@ I worked on a trade processing platform built using a microservices architecture
 
 Trade data was received from upstream systems and ingested into our platform through RabbitMQ. One of our core services acted as a consumer, which received trade events and initiated the processing pipeline.
 
-Enrichment & Processing
+#### Enrichment & Processing
 
 The system applied multiple enrichment rules, transformation logic, and validations on incoming trades.
 
@@ -12,7 +12,7 @@ Different microservices were responsible for different enrichment rules, ensurin
 
 Each service focused on a specific domain or business rule related to trade enrichment and processing.
 
-Trade Lifecycle Operations
+#### Trade Lifecycle Operations
 
 The platform supported the complete trade lifecycle, including:
 
@@ -28,7 +28,7 @@ Commenting and updates
 
 All possible trade state transitions and edge cases were handled to ensure data consistency and correctness.
 
-Acknowledgment Handling
+#### Acknowledgment Handling
 
 There were two types of trade acknowledgments:
 
@@ -42,7 +42,7 @@ Trades were routed to the appropriate downstream services.
 
 Additional processing and state updates were applied accordingly.
 
-Communication & Data Flow
+#### Communication & Data Flow
 
 RabbitMQ was used for asynchronous, event-driven communication between services.
 
@@ -50,7 +50,7 @@ HTTP/REST calls were used for synchronous interactions where immediate responses
 
 The final processed and enriched trade data was sent to a dedicated service that indexed the data into Elasticsearch, enabling fast search and analytics.
 
-Key Characteristics
+### Key Characteristics
 
 Event-driven and scalable microservice design
 
