@@ -1,4 +1,71 @@
-# 🔹 How OAuth 2.0 Works?
+### Trade Processing Microservices Platform
+
+I worked on a trade processing platform built using a microservices architecture, designed to handle high-volume, event-driven trade data.
+
+Trade data was received from upstream systems and ingested into our platform through RabbitMQ. One of our core services acted as a consumer, which received trade events and initiated the processing pipeline.
+
+Enrichment & Processing
+
+The system applied multiple enrichment rules, transformation logic, and validations on incoming trades.
+
+Different microservices were responsible for different enrichment rules, ensuring separation of concerns and scalability.
+
+Each service focused on a specific domain or business rule related to trade enrichment and processing.
+
+Trade Lifecycle Operations
+
+The platform supported the complete trade lifecycle, including:
+
+Trade acknowledgment
+
+Match / unmatch
+
+Settlement
+
+Cancellation
+
+Commenting and updates
+
+All possible trade state transitions and edge cases were handled to ensure data consistency and correctness.
+
+Acknowledgment Handling
+
+There were two types of trade acknowledgments:
+
+SIG_ACK – Generated internally by our system.
+
+BOX_ACK – Received from an external downstream system.
+
+Based on the type of acknowledgment:
+
+Trades were routed to the appropriate downstream services.
+
+Additional processing and state updates were applied accordingly.
+
+Communication & Data Flow
+
+RabbitMQ was used for asynchronous, event-driven communication between services.
+
+HTTP/REST calls were used for synchronous interactions where immediate responses were required.
+
+The final processed and enriched trade data was sent to a dedicated service that indexed the data into Elasticsearch, enabling fast search and analytics.
+
+Key Characteristics
+
+Event-driven and scalable microservice design
+
+Asynchronous processing using RabbitMQ
+
+Clear separation of enrichment responsibilities
+
+Robust handling of trade lifecycle states
+
+Real-time visibility via Elasticsearch
+
+
+
+
+## 🔹 How OAuth 2.0 Works?
 OAuth 2.0 does not share passwords; instead, it uses access tokens to grant limited access.
 
 ✅ Step-by-Step OAuth 2.0 Flow
