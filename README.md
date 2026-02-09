@@ -4,6 +4,76 @@ I worked on a trade processing platform built using a microservices architecture
 
 Trade data was received from upstream systems and ingested into our platform through RabbitMQ. One of our core services acted as a consumer, which received trade events and initiated the processing pipeline.
 
+
+### Trade Processing Microservices Platform
+
+I worked on a high-volume, event-driven trade processing platform built using a microservices architecture to handle end-to-end trade lifecycle management.
+
+### Trade Ingestion & Messaging
+
+Trade data was received from upstream systems and ingested into the platform via RabbitMQ.
+
+A core consumer service listened to incoming trade events and initiated the processing pipeline.
+
+The system followed an asynchronous, event-driven model for scalability and resilience.
+
+Flow-Based Trade Processing (Key Contribution)
+
+A major part of my role involved designing and developing multiple trade processing flows.
+
+### What “Different Flows” Mean in This System
+
+Each flow represented a specific trade processing path.
+
+Based on trade attributes, source system, acknowledgment type, or business scenario,
+different enrichment rules and processing logic were applied.
+
+### My Responsibilities
+
+Developed multiple processing flows where:
+
+Different enrichment rules were applied
+
+Different validation and transformation logic was executed
+
+Different downstream routing decisions were made
+
+Ensured each flow was:
+
+Isolated
+
+Maintainable
+
+Easily extendable for new business rules
+
+### Examples
+
+One flow applied pricing and counterparty enrichment
+
+Another flow handled risk and settlement-specific enrichment
+
+Certain flows were triggered only after SIG_ACK
+
+Others were activated on receiving BOX_ACK from external systems
+
+👉 This flow-based design ensured clear separation of concerns and allowed the platform to scale independently as business rules evolved.
+
+### Enrichment & Processing Architecture
+
+Multiple microservices were responsible for specific enrichment rules.
+
+Each service focused on a single domain or business responsibility.
+
+Enrichment included:
+
+Data normalization
+
+Field derivations
+
+Business validations
+
+Trade transformations
+
 #### Enrichment & Processing
 
 The system applied multiple enrichment rules, transformation logic, and validations on incoming trades.
