@@ -1,4 +1,4 @@
-### Trade Processing Microservices Platform
+### 📌  Trade Processing Microservices Platform
 
 I worked on a trade processing platform built using a microservices architecture, designed to handle high-volume, event-driven trade data.
 
